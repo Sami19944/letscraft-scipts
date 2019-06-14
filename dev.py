@@ -75,6 +75,7 @@ def printHelp():
 	print("   clear")
 	print("   copy_template")
 	print("   start <server>")
+	print("   update")
 
 if __name__ == "__main__":
 	path = sys.argv[0]
@@ -104,7 +105,10 @@ if __name__ == "__main__":
 	if func == "start":
 		start()
 		sys.exit()
-	
+	if func == "update":
+		sync_jars()
+		sync_server()
+		sys.exit()
 	# invalid
 	print("invalid command")
 	printHelp()
