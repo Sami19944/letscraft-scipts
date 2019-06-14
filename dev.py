@@ -14,6 +14,9 @@ jar_folder = "jars/"
 # config
 plugins = ['dev', 'network', 'clouddata']
 
+# variables
+
+
 # letscraft-dev
 def sync_jars():
 	print("sync_jars")
@@ -27,6 +30,7 @@ def sync_jars():
 		copyfile(src, dst)
 		
 def sync_server():
+	print("sync_server")
 	path = "server/plugins/"
 	if not os.path.exists(path):
 	    os.makedirs(path)
@@ -43,6 +47,7 @@ def clear():
 	os.makedirs(server_folder)
 	
 def copy_template():
+	print("copy_template")
 	if not os.path.exists(server_folder):
 		os.makedirs(server_folder)
 	
