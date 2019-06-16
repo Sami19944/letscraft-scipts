@@ -4,8 +4,10 @@ import subprocess
 import configparser
 import threading
 
-def start_wait(context, launch):
-	
+def start_wait(dev, launch):
+	server_folder = dev.config['paths']['server_folder']
+	print ("   server_folder: " + server_folder)
+
 	p = subprocess.Popen(
 		launch,
 		shell=True,
@@ -14,7 +16,6 @@ def start_wait(context, launch):
 		stderr=subprocess.STDOUT
 	)
 
-	context.p = p
 	print ("--- context set")
 
 	config_file = "server.conf"
@@ -28,7 +29,9 @@ def start_wait(context, launch):
 	with open(config_file, 'w') as configfile:
 		config.write(configfile)
 
+	dev.instance_threads_size = dev.instance_threads_size + 1
 	p.wait()
+	dev.instance_threads_size = dev.instance_threads_size - 1
 
 	#log end
 	pid = 0
@@ -40,16 +43,16 @@ def start_wait(context, launch):
 
 
 
-def server_start(context):
+def server_start(dev, name='server'):
 	print ("server_start")
-	server_folder = context.main_config['paths']['server_folder']
-	print ("   server_folder: " + server_folder)
+	instance_folder = dev.config['paths']['server_folder'] + name + "/"
+	print ("   instance_folder: " + instance_folder)
 
-	os.chdir(server_folder)
+	os.chdir(instance_folder)
 	path = os.getcwd()
 	print ("   *path: " + path)
 
-	jar_folder = context.main_config['paths']['jar_folder']
+	jar_folder = dev.config['paths']['jar_folder']
 	print ("   jar_folder: " + jar_folder)
 
 	config_file = "server.conf"
@@ -66,7 +69,7 @@ def server_start(context):
 	if( pid != "0"):
 		print("   error: server is already running")
 		return
-	server_jar = "../" + jar_folder + config['server']['server_jar']
+	server_jar = "../../" + jar_folder + config['server']['server_jar']
 	print ("   *server_jar: " + server_jar)
 
 	launch = 'java -Xms1024M -Xmx1024M -jar -DIReallyKnowWhatIAmDoingISwear <server_jar> -o true'
@@ -78,6 +81,6 @@ def server_start(context):
 	print ("   *launch_external: " + launch_external)
 	
 	print("   launching")
-	thread = threading.Thread(target = start_wait, args = (config, launch_external))
+	thread = threading.Thread(target = start_wait, args = (dev, launch_external))
 	thread.start()
 

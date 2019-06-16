@@ -1,9 +1,9 @@
 import os
 from shutil import copyfile
 
-def update(context, plugins):
+def update(dev, plugins):
 	print("update")
-	target_folder =  context.main_config['paths']['plugin_folder']
+	target_folder =  dev.config['paths']['plugin_folder']
 	print("   target_folder: " + target_folder)
 	print("   plugins: " + str(plugins).strip('[]'))
 	if not os.path.exists(target_folder):

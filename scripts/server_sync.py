@@ -1,13 +1,12 @@
 import os
 from shutil import copyfile
 
-def server_sync(context, plugins):
+def server_sync(dev, plugins, name='server'):
 	print("sync_server")
-	server_folder = context.main_config['paths']['server_folder']
-	print("   server_folder: " + server_folder)
-	server_plugin_folder = server_folder + "plugins/"
-	print("   server_plugin_folder: " + server_plugin_folder)
-	plugin_folder = context.main_config['paths']['plugin_folder']
+	instance_folder = dev.config['paths']['server_folder'] + name + "/"
+	print("   instance_folder: " + instance_folder)
+	server_plugin_folder = instance_folder + "plugins/"
+	plugin_folder = dev.config['paths']['plugin_folder']
 	print("   plugin_folder: " + plugin_folder)
 	print("   plugins: " + str(plugins).strip('[]'))
 	path = os.getcwd()
