@@ -45,8 +45,8 @@ def start_wait(dev, launch):
 
 def server_start(dev, name='server'):
 	print ("server_start")
-	instance_folder = dev.config['paths']['server_folder'] + name + "/"
-	print ("   instance_folder: " + instance_folder)
+	server_folder = dev.config['paths']['server_folder']
+	print ("   server_folder: " + server_folder)
 
 	os.chdir(instance_folder)
 	path = os.getcwd()

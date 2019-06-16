@@ -6,7 +6,7 @@ import logging
 
 from scripts import clean
 from scripts import update
-from scripts import server_sync	
+from scripts import sync	
 from scripts import init	
 from scripts import server_start
 from scripts import server_pipe
@@ -22,45 +22,29 @@ class Dev:
 		self.config.read(self.config_file)
 		self.instance_threads_size = 0
 		self.instance_threads = {}
-
 	# console stuff
 	def command_handler(self, func):
+		# reload config
+		self.config = configparser.ConfigParser()
+		self.config.read(self.config_file)
+
+
 		plugins = ['dev', 'network', 'clouddata']
 		if(func == "help"):
 			help()
-		#elif func == "test":
-		#	http_server.test()
-		#elif func == "context":
-		#	print ("context")
-		elif func == "start":
-			server_start.server_start(self)
-		#elif func == "pipe":
-		#	if(len(sys.argv) < 3):
-		#		print("usage: dev_py pipe <message>")
-		#	else:
-		#		server_pipe.server_pipe(context, sys.argv[2])
-		elif func == "clean":
-			clean.clean(self)
 		elif func == "update":
 			update.update(self, plugins)
+		elif func == "clean":
+			clean.clean(self)
+		elif func == "init":
+			init.init(self)
 		elif func == "sync":
-			server_sync.server_sync(self, plugins)
-		elif func == "init":
-			init.init(self)
-		elif func == "init":
-			init.init(self)
+			sync.sync(self, plugins)
 		elif func == "status":
 			status.status(self)
-		# shortcuts
-		#elif func == "reload": # get the newest plugin jars
-		#	command_handler("update")
-		#	command_handler("sync")
-		#	command_handler("start")
-		#elif func == "restart": # get the newest plugin jars and start server
-		#	command_handler("clean")
-		#	command_handler("update")
-		#	command_handler("sync")
-		#	command_handler("start")
+
+		elif func == "start":
+			server_start.server_start(self)
 		else:
 			# invalid
 			print("invalid command: " + func)
@@ -69,17 +53,17 @@ class Dev:
 
 def help():
 	print("help")
-	print("   env")
-	print("   start <server>")
-	print("   status <server>")
-	print("   update")
-	print("   context")
-	print("   init")
-	print("   sync_server")
-	print("   clean")
-	print("   reload")
-	print("   restart")
+	print("   env    : starts the enviroment")
+	print("   update : updates cached jars")
+	print("   clean  : cleans instance directory")
+	print("   init   : inits server instances")
+	print("   sync   : syncs server isntances")
+	print("   status : shows overall status")
+	
 	print("   exit")
+
+	print("   status <server> ")
+	print("   start <server>")
 
 
 
