@@ -69,6 +69,7 @@ class Dev:
 
 def help():
 	print("help")
+	print("   env")
 	print("   start <server>")
 	print("   status <server>")
 	print("   update")
@@ -80,28 +81,43 @@ def help():
 	print("   restart")
 	print("   exit")
 
+
+
+def env(dev):
+	is_running = True
+	start_path = os.getcwd()
+
+	while is_running:
+		str = input(">> ")
+		if(str == "exit"):
+			is_running = False
+		else:
+			os.chdir(start_path)
+			print("path: " + os.getcwd())
+			dev.command_handler(str)
+	print("bye")
+	sys.exit()
+
+
 if __name__ == "__main__":
 	print("letscraft-dev")
+	path = sys.argv[0]
+
+	# no arg
+	if(len(sys.argv) <= 1):
+		print("usage: dev.py <func>, try help")
+		sys.exit()
+
 	dev = Dev()
 
-	path = sys.argv[0]
-	# single command
-	if(len(sys.argv) > 1):
-		func = sys.argv[1]
-		dev.command_handler(func)
-	# start env
-	else:
-		print("console")
-		is_running = True
-		start_path = os.getcwd()
+	func = sys.argv[1]
 
-		while is_running:
-			str = input(">> ")
-			if(str == "exit"):
-				is_running = False
-			else:
-				os.chdir(start_path)
-				print("path: " + os.getcwd())
-				dev.command_handler(str)
-		print("bye")
-		sys.exit()
+	# pre funcs
+	if func == "env":
+		env(dev)
+	elif func == "version":
+		print("not implemented yet")
+	else:
+		dev.command_handler(func)
+
+
