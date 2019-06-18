@@ -6,5 +6,6 @@ def status(dev):
 		pid = dev.config[key]['pid']
 		print("      instance: " + instance)
 		print("      pid: " + pid)
-	print("   debug")
-	
+	print("   threads")
+	for i, t in dev.instance_threads:
+		print(      "-" + i)	

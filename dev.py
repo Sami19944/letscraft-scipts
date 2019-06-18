@@ -9,8 +9,9 @@ from scripts import update
 from scripts import sync	
 from scripts import init	
 from scripts import server_start
-from scripts import server_pipe
+from scripts import pipe
 from scripts import status
+from scripts import http_server
 
 from scripts import http_server
 
@@ -28,7 +29,6 @@ class Dev:
 		self.config = configparser.ConfigParser()
 		self.config.read(self.config_file)
 
-
 		plugins = ['dev', 'network', 'clouddata']
 		if(func == "help"):
 			help()
@@ -42,9 +42,16 @@ class Dev:
 			sync.sync(self, plugins)
 		elif func == "status":
 			status.status(self)
-
 		elif func == "start":
 			server_start.server_start(self)
+		elif func == "httpserver":
+			http_server.run(self)
+		elif func == "reload":
+			print("update then sync")
+			self.command_handler("update")
+			self.command_handler("sync")
+			pipe.pipe(self, "reload")
+			
 		else:
 			# invalid
 			print("invalid command: " + func)
@@ -60,6 +67,8 @@ def help():
 	print("   sync   : syncs server isntances")
 	print("   status : shows overall status")
 	
+	print("   httpserver")
+
 	print("   exit")
 
 	print("   status <server> ")

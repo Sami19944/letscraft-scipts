@@ -4,7 +4,7 @@ import subprocess
 import configparser
 import threading
 
-def start_wait(dev, launch):
+def start_wait(dev, instance, launch):
 	server_folder = dev.config['paths']['server_folder']
 	print ("   server_folder: " + server_folder)
 
@@ -15,6 +15,8 @@ def start_wait(dev, launch):
 		stdout=subprocess.PIPE,
 		stderr=subprocess.STDOUT
 	)
+
+	dev.instance_threads[instance] = None
 
 	print ("--- context set")
 
@@ -45,8 +47,8 @@ def start_wait(dev, launch):
 
 def server_start(dev, name='server'):
 	print ("server_start")
-	server_folder = dev.config['paths']['server_folder']
-	print ("   server_folder: " + server_folder)
+	instance_folder = "servers/server/"
+	print ("   instance_folder: " + instance_folder)
 
 	os.chdir(instance_folder)
 	path = os.getcwd()
@@ -81,6 +83,6 @@ def server_start(dev, name='server'):
 	print ("   *launch_external: " + launch_external)
 	
 	print("   launching")
-	thread = threading.Thread(target = start_wait, args = (dev, launch_external))
+	thread = threading.Thread(target = start_wait, args = (dev, name, launch_external))
 	thread.start()
 

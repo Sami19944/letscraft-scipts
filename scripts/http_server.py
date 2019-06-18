@@ -15,13 +15,29 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type','text/html')
         self.end_headers()
 
+
         # Send message back to client
-        message = "Hello world!"
+        message = "do_GET"
+        message = message + '\n' + '<form action="" id="post">'
+        message = message + '\n' + '   <input type="text" name="func">'
+        message = message + '\n' + '   <button type="submit">send</button>'
+        message = message + '\n' + '</form>'
         # Write content as utf-8 data
         self.wfile.write(bytes(message, "utf8"))
-        return
+
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        body = self.rfile.read(content_length)
+        self.send_response(200)
+        self.end_headers()
+        response = BytesIO()
+        response.write(b'This is POST request. ')
+        response.write(b'Received: ')
+        response.write(body)
+        self.wfile.write(response.getvalue())
+
  
-def run():
+def run(dev):
 	create_logger()
 	config_file = "main.conf"
 	config = configparser.ConfigParser()
