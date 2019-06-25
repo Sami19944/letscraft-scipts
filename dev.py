@@ -1,14 +1,15 @@
 import sys
 import os
-import configparser
 import subprocess
 import logging
+import configparser
 
 from scripts import clean
 from scripts import update
 from scripts import sync	
 from scripts import init	
 from scripts import server_start
+from scripts import start_all
 from scripts import pipe
 from scripts import status
 from scripts import http_server
@@ -19,31 +20,34 @@ class Dev:
 
 	def __init__(self):
 		self.config_file = 'main.conf'	
+		self.servers_config_file = 'servers.conf'
 		self.config = configparser.ConfigParser()
 		self.config.read(self.config_file)
+		self.servers_config = configparser.ConfigParser()
+		self.servers_config.read(self.servers_config_file)
 		self.instance_threads_size = 0
 		self.instance_threads = {}
 	# console stuff
 	def command_handler(self, func):
 		# reload config
+		import configparser
 		self.config = configparser.ConfigParser()
 		self.config.read(self.config_file)
 
-		plugins = ['dev', 'network', 'clouddata']
 		if(func == "help"):
 			help()
 		elif func == "update":
-			update.update(self, plugins)
+			update.update(self)
 		elif func == "clean":
 			clean.clean(self)
 		elif func == "init":
 			init.init(self)
 		elif func == "sync":
-			sync.sync(self, plugins)
+			sync.sync(self)
 		elif func == "status":
 			status.status(self)
 		elif func == "start":
-			server_start.server_start(self)
+			start_all.start_all(self)
 		elif func == "httpserver":
 			http_server.run(self)
 		elif func == "reload":
@@ -88,6 +92,7 @@ def env(dev):
 			os.chdir(start_path)
 			print("path: " + os.getcwd())
 			dev.command_handler(str)
+	print("waiting for threads to exit")
 	print("bye")
 	sys.exit()
 

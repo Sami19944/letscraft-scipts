@@ -1,8 +1,5 @@
-import subprocess
-import configparser
-import os
-
 def server_status(context):
+	import os
 	print ("server_status")
 	server_folder = context.main_config['paths']['server_folder']
 	print ("   server_folder: " + server_folder)
@@ -13,6 +10,7 @@ def server_status(context):
 	config_file = "server.conf"
 	print ("   *config_file: " + config_file)
 
+	import configparser
 	config = configparser.ConfigParser()
 	config.read(config_file)
 

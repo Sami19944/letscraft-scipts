@@ -1,11 +1,11 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import configparser
+from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer
 import os
 import logging
+import configparser
  
 # HTTPRequestHandler class
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
- 
     # GET
     def do_GET(self):
         # Send response status code

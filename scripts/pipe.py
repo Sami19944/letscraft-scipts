@@ -1,6 +1,5 @@
 import os
 import sys
-import configparser
 import subprocess
 
 def pipe(dev, command, instance="server"):
