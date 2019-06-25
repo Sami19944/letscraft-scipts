@@ -1,0 +1,8 @@
+# eclipse
+.project
+servers/
+
+# python
+*.pyc
+/target/
+/bin/
