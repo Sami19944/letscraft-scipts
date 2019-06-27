@@ -5,38 +5,38 @@ import logging
 import configparser
  
 # HTTPRequestHandler class
-class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
-    # GET
-    def do_GET(self):
-        # Send response status code
+class RequestHandler(BaseHTTPRequestHandler):
+    def _set_response(self):
         self.send_response(200)
-
-        # Send headers
-        self.send_header('Content-type','text/html')
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
 
+    def do_GET(self):
+        logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
+        self._set_response()
 
-        # Send message back to client
-        message = "do_GET"
-        message = message + '\n' + '<form action="" id="post">'
-        message = message + '\n' + '   <input type="text" name="func">'
-        message = message + '\n' + '   <button type="submit">send</button>'
-        message = message + '\n' + '</form>'
-        # Write content as utf-8 data
-        self.wfile.write(bytes(message, "utf8"))
+        message = ""
+        message = message + '<h3>dev.py</h3>'
+        message = message + '<form action="" method="post">'
+        message = message + '   <input type="text" name="in_func" placeholder="func" />'
+        message = message + '   <input type="submit" value="post" />'
+        message = message + '</form>'
+
+        self.wfile.write(message.encode('utf-8'))
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        body = self.rfile.read(content_length)
-        self.send_response(200)
-        self.end_headers()
-        response = BytesIO()
-        response.write(b'This is POST request. ')
-        response.write(b'Received: ')
-        response.write(body)
-        self.wfile.write(response.getvalue())
+        content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
+                str(self.path), str(self.headers), post_data.decode('utf-8'))
 
- 
+        self._set_response()
+
+        message = ""
+        message = message + 'func: '
+
+        self.wfile.write(message.encode('utf-8'))
+
 def run(dev):
 	create_logger()
 	config_file = "main.conf"
@@ -56,7 +56,7 @@ def run(dev):
 	# Server settings
 	# Choose port 8080, for port 80, which is normally used for a http server, you need root access
 	server_address = (host, port)
-	httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
+	httpd = HTTPServer(server_address, RequestHandler)
 	print('   running server...')
 	httpd.serve_forever()
 

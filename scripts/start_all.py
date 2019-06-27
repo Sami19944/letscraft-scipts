@@ -4,22 +4,39 @@ import subprocess
 import threading
 import configparser
 
-def start_and_wait(worker_id, path, launch):
+from threading import Lock
 
+def start_and_wait(dev, server_name, path, launch):
+	server = server_name
 	p = subprocess.Popen(
 		launch,
 		shell=True,
 		stdin=subprocess.PIPE
 	)
 	pid = p.pid
-	print ("[worker_" + worker_id + "] pid " + str(pid))
-	print ("[worker_" + worker_id + "] server started ")
+	print ("[server_" + server_name + "] pid " + str(pid))
+	print ("[server_" + server_name + "] server started ")
+
+	# run config
+	print ("[server_" + server_name + "] config start ")
+	dev.run_config_mutex.acquire()
+	if not server in dev.run_config:
+		dev.run_config.add_section(server)
+	dev.save_run_config()
+	dev.run_config_mutex.release()
+	print ("[server_" + server_name + "] config end ")
+
+
 	p.wait()
-	print ("[worker_" + worker_id + "] server exited ")
+	print ("[server_" + server_name + "] server exited ")
 
 
 def start_all(dev):
 	print ("start_all")
+
+	# run config
+	if not os.path.isfile('run.conf'):
+		open('run.conf', "a+")
 
 	servers_config = dev.servers_config
 	
@@ -42,7 +59,7 @@ def start_all(dev):
 			launch_external = launch_external.replace("<server_folder>", server_folder)
 			print("   launch_external: " + launch_external)
 			print("   launching")
-			thread = threading.Thread(target = start_and_wait, args = (server, server_folder, launch_external))
+			thread = threading.Thread(target = start_and_wait, args = (dev, server, server_folder, launch_external))
 			thread.start()
 		else:
 			print("- " + server + "(turned off)")

@@ -4,6 +4,8 @@ import subprocess
 import logging
 import configparser
 
+from threading import Lock
+
 from scripts import clean
 from scripts import update
 from scripts import sync	
@@ -21,12 +23,27 @@ class Dev:
 	def __init__(self):
 		self.config_file = 'main.conf'	
 		self.servers_config_file = 'servers.conf'
+		self.run_config_file = 'run.conf'
 		self.config = configparser.ConfigParser()
 		self.config.read(self.config_file)
 		self.servers_config = configparser.ConfigParser()
 		self.servers_config.read(self.servers_config_file)
+		self.run_config = configparser.ConfigParser()
+		self.run_config.read(self.run_config_file)
 		self.instance_threads_size = 0
 		self.instance_threads = {}
+		self.run_config_mutex = Lock()
+
+	def save_config(self):
+		with open(self.config_file, 'w') as configfile:
+			self.config.write(configfile)
+	def save_servers_config(self):
+		with open(self.servers_config_file, 'w') as configfile:
+			self.servers_config.write(configfile)
+	def save_run_config(self):
+		with open(self.run_config_file, 'w') as configfile:
+			self.run_config.write(configfile)
+
 	# console stuff
 	def command_handler(self, func):
 		# reload config
