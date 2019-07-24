@@ -25,14 +25,13 @@ def update(dev):
 	if not os.path.exists(plugin_folder):
 	    os.makedirs(plugin_folder)
 
-	# todo export
-	plugins = ['clouddata', 'dev', 'network']
+	plugins = repo_config.sections()
 
 	for pl in plugins:
 		parent = os.path.abspath(os.path.join('.', os.pardir))
-		src = parent + "/letscraft-api/plugin_" + pl + "/target/" + pl + ".jar"
+		src = parent + "/letscraft-api/" + pl + "/target/" + pl + ".jar"
 		dst = plugin_folder + pl + ".jar"
-		section = "plugin_" + pl
+		section = pl
 
 		src_chksm = "src_not_found"
 		if os.path.isfile(src):
